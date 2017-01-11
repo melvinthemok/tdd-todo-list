@@ -1,10 +1,11 @@
 const uuidGenerator = require('uuid/v4')
+const fs = require('fs')
 
 let todos = require('../data.json').todos
 
 function save () {
   const json = JSON.stringify({ todos: todos })
-  fs.writeFile('data.json', json, 'utf8')
+  fs.writeFileSync('data.json', json, 'utf8')
 }
 
 // CREATE - params should be an object with keys for name, description and completed
@@ -21,6 +22,7 @@ function create (params) {
     return 'Failed to create because name provided was too short.'
   }
   todos.push(newObj)
+  save()
   return newObj
 }
 
@@ -40,20 +42,35 @@ function show (id) {
 // UPDATE - params should be an object with KVPs for the fields to update
 function update (id, updatedParams) {
   let toUpdateDo = show(id)
-  toUpdateDo.name = updatedParams[0]
-  toUpdateDo.description = updatedParams[1]
-  toUpdateDo.completed = updatedParams[2]
-  return true
+
+  if (toUpdateDo && typeof updatedParams === 'object') {
+    if (updatedParams.name === '' || updatedParams.name.length < 5) {
+      return false
+    }
+
+    toUpdateDo.name = updatedParams.name || toUpdateDo.name
+    toUpdateDo.description = updatedParams.description || toUpdateDo.description
+    if (typeof updatedParams.completed === 'boolean') {
+      toUpdateDo.completed = updatedParams.completed
+    }
+
+    save()
+    return true
+  }
+  return false
 }
 
 // DESTROY (destroy & destroyAll)
 function destroy (id) {
   let targetedIndex = todos.indexOf(show(id))
   todos.splice(targetedIndex, 1)
+  save()
   return true
 }
+
 function destroyAll () {
   todos.length = 0
+  save()
   return true
 }
 
@@ -63,5 +80,5 @@ module.exports = {
   show: show,
   update: update,
   destroy: destroy,
-  destroyAll: destroyAll,
+  destroyAll: destroyAll
 }

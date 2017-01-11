@@ -93,10 +93,10 @@ assert.deepEqual(todos.show(firstToDo._id), firstToDo, 'Show(id) should return a
 todos.destroyAll()
 todos.create(testObj2)
 firstToDo = todos.list()[0]
-todos.update(firstToDo._id, ['Tan Ah Kow', 'Identified man', true])
-assert.strictEqual(firstToDo['name'], 'Tan Ah Kow', 'Name not updated.')
-assert.strictEqual(firstToDo['description'], 'Identified man', 'Description not updated.')
-assert.strictEqual(firstToDo['completed'], true, 'Completion status not updated.')
+todos.update(firstToDo._id, {name: 'Tan Ah Kow', description: 'Identified man', completed: true})
+assert.strictEqual(firstToDo.name, 'Tan Ah Kow', 'Name not updated.')
+assert.strictEqual(firstToDo.description, 'Identified man', 'Description not updated.')
+assert.strictEqual(firstToDo.completed, true, 'Completion status not updated.')
 
 // Destroy(id) should remove an identified Todo from the todos list
 
