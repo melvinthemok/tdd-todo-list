@@ -1,20 +1,21 @@
 const uuidGenerator = require('uuid/v4')
 const fs = require('fs')
 
-let todos = require('../data.json').todos
+let todos = require('../data.json').todosKey
 
-function save () {
-  const json = JSON.stringify({ todos: todos })
+const save = () => {
+  const json = JSON.stringify({ todosKey: todos })
   fs.writeFileSync('data.json', json, 'utf8')
 }
 
 // CREATE - params should be an object with keys for name, description and completed
-function create (params) {
+const create = (params) => {
+  params.completed = (params.completed === 'true')
   let newObj = {
+    _id: uuidGenerator(),
     name: params.name,
     description: params.description || 'Urgent',
-    completed: params.completed || false,
-    _id: uuidGenerator()
+    completed: params.completed || false
   }
   if (!newObj.name) {
     return 'Failed to create because no name provided.'
@@ -27,10 +28,10 @@ function create (params) {
 }
 
 // READ (list & show)
-function list () {
+const list = () => {
   return todos
 }
-function show (id) {
+const show = (id) => {
   for (let i = 0; i < todos.length; i++) {
     if (todos[i]._id === id) {
       return todos[i]
@@ -40,7 +41,7 @@ function show (id) {
 }
 
 // UPDATE - params should be an object with KVPs for the fields to update
-function update (id, updatedParams) {
+const update = (id, updatedParams) => {
   let toUpdateDo = show(id)
 
   if (toUpdateDo && typeof updatedParams === 'object') {
@@ -50,6 +51,7 @@ function update (id, updatedParams) {
 
     toUpdateDo.name = updatedParams.name || toUpdateDo.name
     toUpdateDo.description = updatedParams.description || toUpdateDo.description
+    updatedParams.completed = (updatedParams.completed === 'true')
     if (typeof updatedParams.completed === 'boolean') {
       toUpdateDo.completed = updatedParams.completed
     }
@@ -61,14 +63,14 @@ function update (id, updatedParams) {
 }
 
 // DESTROY (destroy & destroyAll)
-function destroy (id) {
+const destroy = (id) => {
   let targetedIndex = todos.indexOf(show(id))
   todos.splice(targetedIndex, 1)
   save()
   return true
 }
 
-function destroyAll () {
+const destroyAll = () => {
   todos.length = 0
   save()
   return true

@@ -44,7 +44,7 @@ assert.strictEqual(todos.create(testObjNoName), 'Failed to create because no nam
 
 // Create returns object with the 3 keys
 
-assert.deepEqual(Object.keys(todos.create(testObj2)), [ 'name', 'description', 'completed', '_id' ], 'Create should return an object with "name", "description" and "completed" as keys.')
+assert.deepEqual(Object.keys(todos.create(testObj2)), [ '_id', 'name', 'description', 'completed' ], 'Create should return an object with "name", "description" and "completed" as keys.')
 
 // Create returns object with user's parameters
 
@@ -93,7 +93,7 @@ assert.deepEqual(todos.show(firstToDo._id), firstToDo, 'Show(id) should return a
 todos.destroyAll()
 todos.create(testObj2)
 firstToDo = todos.list()[0]
-todos.update(firstToDo._id, {name: 'Tan Ah Kow', description: 'Identified man', completed: true})
+todos.update(firstToDo._id, {name: 'Tan Ah Kow', description: 'Identified man', completed: 'true'})
 assert.strictEqual(firstToDo.name, 'Tan Ah Kow', 'Name not updated.')
 assert.strictEqual(firstToDo.description, 'Identified man', 'Description not updated.')
 assert.strictEqual(firstToDo.completed, true, 'Completion status not updated.')
